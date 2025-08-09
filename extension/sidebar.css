@@ -1,0 +1,404 @@
+/* =================== ShopSage - Modern Enhancements (append after original) =================== */
+
+/* 1) Floating button: subtle float + focus ring + backdrop for contrast */
+.shopsage-open-btn {
+  right: 20px; /* tiny nudge */
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  box-shadow:
+    0 12px 32px rgba(15, 23, 42, 0.65),
+    0 2px 6px rgba(79, 70, 229, 0.12) inset;
+  transition:
+    transform 0.22s cubic-bezier(0.2, 0.9, 0.2, 1),
+    box-shadow 0.22s;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+.shopsage-open-btn:focus {
+  box-shadow:
+    0 16px 44px rgba(15, 23, 42, 0.72),
+    0 0 0 4px rgba(124, 58, 237, 0.14);
+  transform: translateY(-6px) scale(1.04);
+}
+
+/* gentle float animation */
+@keyframes ss-float {
+  0% {
+    transform: translateY(0) rotate(0.001deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-0.2deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0.001deg);
+  }
+}
+.shopsage-open-btn:hover {
+  transform: translateY(-8px) scale(1.06);
+}
+.shopsage-open-btn {
+  animation: ss-float 6s ease-in-out infinite;
+}
+
+/* 2) Sidebar glass + depth: keep original gradient but add frosted layer */
+.shopsage-sidebar {
+  position: fixed;
+  right: 20px;
+  top: 60px;
+  width: 380px;
+  max-width: calc(min(92vw, 380px));
+  border-radius: 14px;
+  overflow: visible; /* for shadows */
+  background: linear-gradient(180deg, rgba(6, 18, 38, 0.6), rgba(7, 20, 49, 0.75));
+  box-shadow:
+    0 30px 48px rgba(2, 6, 23, 0.7),
+    0 6px 18px rgba(79, 70, 229, 0.06);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transform-origin: top right;
+  transition:
+    transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1),
+    opacity 0.22s;
+}
+
+/* add soft entrance with subtle overshoot */
+@keyframes ss-slideIn {
+  0% {
+    transform: translateY(10px) translateX(8px) scale(0.985);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(-6px) translateX(-2px) scale(1.005);
+    opacity: 1;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+.shopsage-sidebar {
+  animation: ss-slideIn 0.42s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+/* 3) Header polish */
+.ss-header {
+  padding: 14px 16px;
+  gap: 8px;
+  align-items: center;
+  backdrop-filter: blur(6px);
+}
+.brand .logo {
+  filter: drop-shadow(0 4px 10px rgba(124, 58, 237, 0.18));
+  transition: transform 0.22s;
+}
+.brand .title {
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.2px;
+  color: #eaf2ff;
+}
+
+/* close button nicer */
+.ss-close {
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 10px;
+  transition:
+    background 0.18s,
+    transform 0.14s,
+    color 0.12s;
+  color: rgba(230, 238, 248, 0.78);
+}
+.ss-close:hover {
+  background: rgba(255, 255, 255, 0.025);
+  transform: scale(1.06);
+  color: #fff;
+}
+
+/* 4) Controls layout */
+.ss-body {
+  padding: 14px;
+  max-height: calc(100vh - 140px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.ss-controls {
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* primary button: glassy glow + micro-interaction */
+.btn-primary {
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  box-shadow:
+    0 10px 30px rgba(79, 70, 229, 0.14),
+    0 2px 6px rgba(7, 10, 30, 0.35) inset;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    filter 0.16s ease;
+  transform-origin: center;
+}
+.btn-primary:hover {
+  transform: translateY(-4px) scale(1.03);
+  filter: brightness(1.03);
+  box-shadow: 0 16px 40px rgba(79, 70, 229, 0.18);
+}
+.btn-primary:active {
+  transform: translateY(-1px) scale(0.995);
+}
+
+/* loader: bigger + breathing + ring */
+.ss-loader {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.05);
+  border-top-color: #7c3aed;
+  animation:
+    ss-spin 0.9s linear infinite,
+    ss-breath 1.8s ease-in-out infinite;
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.14);
+}
+@keyframes ss-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ss-breath {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+/* 5) Result area: card-like sections, staggered items */
+#ss-result {
+  margin-top: 6px;
+  padding-top: 6px;
+}
+.ss-result section {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.007));
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.45);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.ss-result section:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(2, 6, 23, 0.55);
+}
+
+/* title style */
+.ss-result h4 {
+  font-size: 13px;
+  margin: 0 0 8px 0;
+  color: #ffda6b;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+}
+
+/* list style + animated entries */
+.ss-result ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #cfe6ff;
+  display: block;
+}
+.ss-result ul li {
+  margin-bottom: 8px;
+  line-height: 1.35;
+  list-style-type: disc;
+  transform-origin: left center;
+  opacity: 0;
+  transform: translateY(10px) scale(0.995);
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition:
+    background 0.14s,
+    transform 0.18s,
+    opacity 0.18s;
+}
+.ss-result ul li:hover {
+  background: rgba(255, 255, 255, 0.015);
+  transform: translateY(0) scale(1.01);
+}
+
+/* stagger animation using nth-child for first 12 items */
+@keyframes ss-popIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.ss-result ul li:nth-child(1) {
+  animation: ss-popIn 0.32s ease 0.06s forwards;
+}
+.ss-result ul li:nth-child(2) {
+  animation: ss-popIn 0.32s ease 0.09s forwards;
+}
+.ss-result ul li:nth-child(3) {
+  animation: ss-popIn 0.32s ease 0.12s forwards;
+}
+.ss-result ul li:nth-child(4) {
+  animation: ss-popIn 0.32s ease 0.15s forwards;
+}
+.ss-result ul li:nth-child(5) {
+  animation: ss-popIn 0.32s ease 0.18s forwards;
+}
+.ss-result ul li:nth-child(6) {
+  animation: ss-popIn 0.32s ease 0.21s forwards;
+}
+.ss-result ul li:nth-child(7) {
+  animation: ss-popIn 0.32s ease 0.24s forwards;
+}
+.ss-result ul li:nth-child(8) {
+  animation: ss-popIn 0.32s ease 0.27s forwards;
+}
+.ss-result ul li:nth-child(9) {
+  animation: ss-popIn 0.32s ease 0.3s forwards;
+}
+.ss-result ul li:nth-child(10) {
+  animation: ss-popIn 0.32s ease 0.33s forwards;
+}
+.ss-result ul li:nth-child(11) {
+  animation: ss-popIn 0.32s ease 0.36s forwards;
+}
+.ss-result ul li:nth-child(12) {
+  animation: ss-popIn 0.32s ease 0.39s forwards;
+}
+
+/* verdict block: accent */
+.ss-verdict {
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.08), rgba(79, 70, 229, 0.04));
+  border-radius: 10px;
+  padding: 10px;
+  font-weight: 700;
+  color: #f0f8ff;
+  box-shadow: inset 0 -6px 20px rgba(2, 6, 23, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.06);
+  transition: transform 0.14s;
+}
+.ss-verdict:empty {
+  opacity: 0.9;
+}
+
+/* 6) Inline info & count badge */
+.ss-info {
+  color: rgba(207, 230, 255, 0.9);
+  font-size: 13px !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#ss-count {
+  background: linear-gradient(90deg, #ffd54f, #ffb86b);
+  color: #10203a;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  box-shadow: 0 6px 18px rgba(255, 213, 79, 0.08);
+  transform-origin: center;
+  transition: transform 0.12s;
+}
+#ss-count:empty {
+  display: inline-block;
+  min-width: 18px;
+  height: 18px;
+}
+
+/* 7) Accessibility helpers */
+button,
+.ss-close,
+.btn-primary {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+button:focus {
+  outline: none;
+}
+
+/* 8) small responsive tweaks */
+@media (max-width: 520px) {
+  .shopsage-sidebar {
+    right: 12px;
+    left: 12px;
+    width: auto;
+    top: 36px;
+    border-radius: 12px;
+    max-height: calc(100vh - 72px);
+  }
+  .shopsage-open-btn {
+    right: 14px;
+    bottom: 74px;
+  }
+  .ss-body {
+    padding: 12px;
+  }
+}
+
+/* Composite score UI */
+.ss-score {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.score-badge {
+  min-width: 56px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #071431;
+  background: linear-gradient(90deg, #ffd54f, #ffb86b);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  font-size: 14px;
+}
+.score-bar {
+  flex: 1;
+  height: 12px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  padding: 2px;
+}
+.score-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  width: 0%;
+  background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+  transition: width 520ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+.score-sub {
+  font-size: 12px;
+  color: rgba(230, 238, 248, 0.85);
+  margin-top: 6px;
+}
+.meta-small {
+  font-size: 12px;
+  color: rgba(154, 164, 178, 0.95);
+}

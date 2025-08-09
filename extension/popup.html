@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>Вердикт</title>
+		<link rel="stylesheet" href="popup.css" />
+	</head>
+	<body>
+		<div class="popup fade-in" id="root">
+			<header class="pop-header">
+				<div class="logo">Вердикт</div>
+				<div class="subtitle">ИИ анализатор отзывов</div>
+			</header>
+
+			<main class="pop-body">
+				<!-- MAIN ACTIONS -->
+				<div class="controls" id="mainControls">
+					<label>
+						Максимум отзывов для анализа
+						<input
+							id="maxReviewsMain"
+							type="number"
+							min="5"
+							max="20"
+							value="10"
+						/>
+					</label>
+					<button id="openSidebar" class="btn">Открыть панель</button>
+				</div>
+
+				<div class="status" id="status">Готово</div>
+
+				<!-- PREVIEW / FEEDBACK -->
+				<div class="preview" id="preview">
+					Нажмите «Открыть панель», чтобы проанализировать отзывы на текущей
+					странице.
+				</div>
+
+				<!-- TABBED SETTINGS (inline, hidden by default) -->
+				<div class="settings" id="settings" style="display: none">
+					<h3>Настройки</h3>
+					<div class="field">
+						<label
+							>Server URL
+							<input
+								id="serverUrl"
+								type="text"
+								placeholder="http://localhost:3000"
+							/>
+						</label>
+						<small class="muted"
+							>URL сервера для анализа (если используется внешний API).</small
+						>
+					</div>
+
+					<div class="field">
+						<label
+							>Максимум отзывов для анализа
+							<input
+								id="maxReviews"
+								type="number"
+								min="5"
+								max="20"
+								value="10"
+							/>
+						</label>
+						<small class="muted"
+							>Максимум отзывов, которые будут собраны со страницы.</small
+						>
+					</div>
+
+					<div class="actions">
+						<button id="saveSettings" class="small">Сохранить</button>
+						<button id="cancelSettings" class="small">Отмена</button>
+					</div>
+					<div id="settingsStatus" class="muted"></div>
+				</div>
+			</main>
+
+			<footer class="pop-footer">
+				<div style="display: flex; gap: 8px; align-items: center">
+					<button id="toggleSettings" class="link">Настройки</button>
+					<button id="resetDefaults" class="link">Сброс</button>
+				</div>
+			</footer>
+		</div>
+
+		<script src="popup.js"></script>
+	</body>
+</html>

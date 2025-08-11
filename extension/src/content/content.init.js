@@ -1,5 +1,4 @@
 // content/init.js
-import { getStorage, setStorage, sendAnalysisRequest } from './api.js';
 import { createFloatingButton } from './ui.js';
 
 /**

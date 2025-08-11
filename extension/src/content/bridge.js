@@ -3,8 +3,6 @@
 // Экспортирует handleRuntimeMessage / handleOpenSidebarMessage и регистрирует chrome.runtime.onMessage listener.
 
 import { ROOT_ID, BTN_ID } from './constants.js';
-import { setStorage } from './api.js'; // если используешь обёртку; опционально
-// импортим открытие сайдбара, чтобы вызвать локально, если доступно
 import { openSidebar } from './sidebar.js';
 
 /**
@@ -18,7 +16,6 @@ export function handleOpenSidebarMessage(msg, sender, sendResponse) {
     try {
         const cfg = msg.config || {};
 
-        // Используем chrome.storage.sync напрямую (на случай, если api.setStorage не подключён)
         if (chrome && chrome.storage && chrome.storage.sync) {
             chrome.storage.sync.set({
                 serverUrl: cfg.serverUrl || '',

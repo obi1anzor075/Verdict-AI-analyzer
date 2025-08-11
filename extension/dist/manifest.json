@@ -37,9 +37,7 @@
         "assets/index.js-loader-DHr1GnNc.js"
       ],
       "matches": [
-        "*://market.yandex.ru/*",
-        "*://*.wildberries.ru/*",
-        "*://*.ozon.ru/*"
+        "*://market.yandex.ru/*"
       ],
       "run_at": "document_idle"
     }
@@ -60,8 +58,6 @@
     },
     {
       "matches": [
-        "*://*.ozon.ru/*",
-        "*://*.wildberries.ru/*",
         "*://market.yandex.ru/*"
       ],
       "resources": [

@@ -149,16 +149,6 @@ export function extractProductMeta() {
 export function extractRatingBreakdown() {
     const out = { 5: null, 4: null, 3: null, 2: null, 1: null, avg: null, totalRatings: null, totalReviews: null };
 
-    function parseNumLocal(s) {
-        if (s == null) return null;
-        const cleaned = String(s).trim().replace(/\s+/g, '').replace(/[^0-9\.,Kk]/g, '');
-        if (/k$/i.test(cleaned)) {
-            return Math.round(parseFloat(cleaned.replace(/k$/i, '')) * 1000);
-        }
-        const n = parseFloat(cleaned.replace(',', '.'));
-        return Number.isFinite(n) ? Math.round(n) : null;
-    }
-
     try {
         const ratingNode = document.querySelector('[data-zone-name="rating"], [data-auto="ugc-section"]');
         if (ratingNode) {
@@ -167,14 +157,14 @@ export function extractRatingBreakdown() {
             const revc = ratingNode.getAttribute('reviewcount') || ratingNode.getAttribute('data-reviewcount') || ratingNode.getAttribute('reviewcounttext');
 
             if (rv) out.avg = parseFloat(String(rv).replace(',', '.')) || out.avg;
-            if (rc) out.totalRatings = parseNumLocal(rc) || out.totalRatings;
-            if (revc) out.totalReviews = parseNumLocal(revc) || out.totalReviews;
+            if (rc) out.totalRatings = parseNumber(rc) || out.totalRatings;
+            if (revc) out.totalReviews = parseNumber(revc) || out.totalReviews;
         }
 
         const ratingCountEl = document.querySelector('[data-auto="rating-count-text"], [data-auto="ratingCount"], .rating-count, .ds-text[data-auto="rating-count-text"]');
         const reviewCountEl = document.querySelector('[data-auto="review-count-text"], .review-count, .ds-text[data-auto="review-count-text"]');
-        if (ratingCountEl && !out.totalRatings) out.totalRatings = parseNumLocal(ratingCountEl.innerText || ratingCountEl.textContent) || out.totalRatings;
-        if (reviewCountEl && !out.totalReviews) out.totalReviews = parseNumLocal(reviewCountEl.innerText || reviewCountEl.textContent) || out.totalReviews;
+        if (ratingCountEl && !out.totalRatings) out.totalRatings = parseNumber(ratingCountEl.innerText || ratingCountEl.textContent) || out.totalRatings;
+        if (reviewCountEl && !out.totalReviews) out.totalReviews = parseNumber(reviewCountEl.innerText || reviewCountEl.textContent) || out.totalReviews;
 
         // breakdown histogram selectors
         const histSelectors = [
@@ -191,7 +181,7 @@ export function extractRatingBreakdown() {
                 const m = txt.match(/^\s*([1-5])\D{0,6}([0-9\s,.Kk]{1,12})\s*$/);
                 if (m) {
                     const star = Number(m[1]);
-                    const cnt = parseNumLocal(m[2]);
+                    const cnt = parseNumber(m[2]);
                     if (star >= 1 && star <= 5 && cnt != null) {
                         out[star] = cnt;
                         found++;
@@ -202,7 +192,7 @@ export function extractRatingBreakdown() {
                         const star = Number(maybeStar[1]);
                         let cnt = null;
                         const sibling = n.nextElementSibling || (n.parentElement && n.parentElement.querySelector('.count, .value, .number, .ds-text'));
-                        if (sibling) cnt = parseNumLocal(sibling.textContent || sibling.innerText);
+                        if (sibling) cnt = parseNumber(sibling.textContent || sibling.innerText);
                         if (cnt != null) { out[star] = cnt; found++; }
                     }
                 }

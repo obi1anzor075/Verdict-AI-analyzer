@@ -1,0 +1,74 @@
+{
+  "manifest_version": 3,
+  "name": "Вердикт",
+  "version": "1.0.0",
+  "description": "ИИ помощник для анализа отзывов на Яндекс Маркете.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://market.yandex.ru/*",
+    "*://*.wildberries.ru/*",
+    "*://*.ozon.ru/*"
+  ],
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "service-worker-loader.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "assets/index.js-loader-DHr1GnNc.js"
+      ],
+      "matches": [
+        "*://market.yandex.ru/*",
+        "*://*.wildberries.ru/*",
+        "*://*.ozon.ru/*"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "assets/icons/icon16.png",
+        "assets/icons/icon32.png",
+        "assets/icons/icon48.png",
+        "assets/icons/icon128.png",
+        "assets/icons/icon.svg"
+      ],
+      "use_dynamic_url": false
+    },
+    {
+      "matches": [
+        "*://*.ozon.ru/*",
+        "*://*.wildberries.ru/*",
+        "*://market.yandex.ru/*"
+      ],
+      "resources": [
+        "assets/content-B4YMLfgP.js",
+        "assets/index.js-BNcyZz8V.js"
+      ],
+      "use_dynamic_url": false
+    }
+  ]
+}

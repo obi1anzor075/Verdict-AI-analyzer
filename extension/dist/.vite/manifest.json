@@ -1,0 +1,33 @@
+{
+  "../../../../../../@crx/manifest": {
+    "file": "assets/crx-manifest.js-DXprSHUq.js",
+    "name": "crx-manifest.js",
+    "src": "../../../../../../@crx/manifest",
+    "isEntry": true
+  },
+  "_index.js-loader-DHr1GnNc.js": {
+    "file": "assets/index.js-loader-DHr1GnNc.js",
+    "src": "_index.js-loader-DHr1GnNc.js"
+  },
+  "src/background/background.js": {
+    "file": "assets/background-CzTBnQwE.js",
+    "name": "background",
+    "src": "src/background/background.js",
+    "isEntry": true
+  },
+  "src/content/content.init.js": {
+    "file": "assets/content-B4YMLfgP.js",
+    "name": "content",
+    "src": "src/content/content.init.js",
+    "isEntry": true
+  },
+  "src/content/index.js": {
+    "file": "assets/index.js-BNcyZz8V.js",
+    "name": "index.js",
+    "src": "src/content/index.js",
+    "isEntry": true,
+    "imports": [
+      "src/content/content.init.js"
+    ]
+  }
+}

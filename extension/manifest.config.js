@@ -12,7 +12,9 @@ export default defineManifest({
     'scripting'
   ],
   host_permissions: [
-    '*://*/*'
+    '*://market.yandex.ru/*',
+    '*://*.wildberries.ru/*',
+    '*://*.ozon.ru/*'
   ],
   icons: {
     '16': 'assets/icons/icon16.png',
@@ -21,7 +23,6 @@ export default defineManifest({
     '128': 'assets/icons/icon128.png'
   },
   action: {
-    default_popup: 'popup.html',
     default_icon: {
       '16': 'assets/icons/icon16.png',
       '32': 'assets/icons/icon32.png',
@@ -31,23 +32,15 @@ export default defineManifest({
   },
   background: {
     // Для CRXJS/Vite удобно держать service worker в src/
-    service_worker: 'src/background/background.js'
+    service_worker: 'src/background/background.js',
+    type: 'module'
   },
   content_scripts: [
     {
       matches: [
-        '*://market.yandex.ru/*',
-        '*://*.wildberries.ru/*',
-        '*://*.ozon.ru/*'
+        '*://market.yandex.ru/*'
       ],
-      // точка входа content script — модульный файл в src/
-      js: [
-        'src/content/content.init.js'
-      ],
-      css: [
-        // если у тебя есть sidebar.css — можно положить в src/content/
-        'src/content/sidebar.css'
-      ],
+      js: ['src/content/index.js'],
       run_at: 'document_idle'
     }
   ],
@@ -55,7 +48,7 @@ export default defineManifest({
     {
       resources: [
         'assets/icons/icon16.png',
-        'assets/icons/icon24.png',
+        'assets/icons/icon32.png',
         'assets/icons/icon48.png',
         'assets/icons/icon128.png',
         'assets/icons/icon.svg'

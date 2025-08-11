@@ -753,8 +753,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return out;
   }
 
-
-
   /* Create visible floating button */
   function injectButton() {
     if (document.getElementById(BTN_ID)) return;

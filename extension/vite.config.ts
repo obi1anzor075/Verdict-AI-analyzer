@@ -16,7 +16,6 @@ export default defineConfig({
         // CRXJS сам найдёт entry points из manifest, но можно явно прописать
         background: 'src/background/background.js',
         content: 'src/content/content.init.js',
-        popup: 'popup.html',
       },
     },
   },

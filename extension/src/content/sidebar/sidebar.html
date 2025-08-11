@@ -1,0 +1,55 @@
+<aside class="shopsage-sidebar" role="dialog" aria-label="ShopSage">
+	<header class="ss-header">
+		<div class="brand">
+			<img
+				src=""
+				alt="Verdict Logo"
+				width="32"
+				height="32"
+				id="ss-logo"
+			/>
+			<div class="title">Вердикт</div>
+		</div>
+		<button class="ss-close" title="Закрыть">✕</button>
+	</header>
+	<main class="ss-body">
+		<div class="ss-controls">
+			<button id="ss-analyze" class="btn-primary">Анализировать отзывы</button>
+			<div class="ss-info">Выбрано <span id="ss-count">0</span> отзывов</div>
+			<div class="ss-meta">
+				<div class="muted">Рейтинг: <strong id="ss-rating">—</strong></div>
+				<div class="muted">Всего: <strong id="ss-total">—</strong></div>
+			</div>
+			<div id="ss-loader" class="ss-loader hidden" aria-hidden="true"></div>
+		</div>
+
+		<div id="ss-error" class="error-msg hidden"></div>
+
+		<div class="ss-score hidden" id="ss-score-container">
+			<div class="score-badge" id="ss-score-badge">—</div>
+			<div class="score-bar">
+				<div
+					class="score-bar-inner"
+					id="ss-score-bar-inner"
+					style="width: 0%"
+				></div>
+			</div>
+		</div>
+		<div class="score-sub hidden" id="ss-score-sub"></div>
+
+		<div id="ss-result" class="ss-result hidden" aria-live="polite">
+			<section>
+				<h4>Плюсы</h4>
+				<ul id="ss-pros" class="pros-list"></ul>
+			</section>
+			<section>
+				<h4>Минусы</h4>
+				<ul id="ss-cons" class="cons-list"></ul>
+			</section>
+			<section>
+				<h4>Итог</h4>
+				<div id="ss-verdict" class="ss-verdict"></div>
+			</section>
+		</div>
+	</main>
+</aside>

@@ -98,16 +98,17 @@ export function openSidebar() {
 
     // show product meta initially
     const metaNow = extractProductMeta();
-    if (ratingEl) ratingEl.innerText = metaNow.avgRating != null ? metaNow.avgRating : '—';
+    if (ratingEl) { ratingEl.innerHTML = formatRatingHTML(metaNow.avgRating); }
     if (totalEl) totalEl.innerText = metaNow.totalRatings != null ? metaNow.totalRatings : '—';
 
     // Error display helper
     function showError(message) {
         if (errorEl) {
             errorEl.innerText = message;
-            errorEl.classList.remove('hidden');
+            showElement(errorEl);
+
             setTimeout(() => {
-                errorEl.classList.add('hidden');
+                hideElement(errorEl);
             }, 5000);
         }
     }
@@ -115,14 +116,22 @@ export function openSidebar() {
     // analyze click handler
     function onAnalyzeClick(e) {
         if (analyzeBtn) analyzeBtn.disabled = true;
-        if (loader) loader.classList.remove('hidden');
-        if (resultEl) {
-            resultEl.classList.add('hidden');
-            resultEl.classList.remove('show');
+        if (loader) {
+            showElement(loader);
         }
-        if (scoreContainer) scoreContainer.classList.add('hidden');
-        if (scoreSub) scoreSub.classList.add('hidden');
-        if (errorEl) errorEl.classList.add('hidden');
+
+        if (resultEl) {
+            hideElement(resultEl);
+        }
+        if (scoreContainer) {
+            hideElement(scoreContainer);
+        }
+        if (scoreSub) {
+            hideElement(scoreSub);
+        }
+        if (errorEl) {
+            hideElement(errorEl);
+        }
 
         const CHAR_LIMIT = 15000;
         const SEPARATOR = '\n\n';
@@ -137,7 +146,9 @@ export function openSidebar() {
             const originalCount = candidates.length;
 
             if (originalCount === 0) {
-                if (loader) loader.classList.add('hidden');
+                if (loader) {
+                    hideElement(loader);
+                }
                 if (analyzeBtn) analyzeBtn.disabled = false;
                 showError('Не найдено отзывов на странице. Попробуйте прокрутить страницу или перейти на страницу с отзывами.');
                 return;
@@ -172,12 +183,11 @@ export function openSidebar() {
                 }
             }
 
-            // Update count
-            if (countEl) countEl.innerText = `${selected.length} (из ${originalCount})`;
+
 
             // Extract fresh metadata
             const productMeta = extractProductMeta();
-            if (ratingEl) ratingEl.innerText = productMeta.avgRating != null ? productMeta.avgRating : '—';
+            if (ratingEl) { ratingEl.innerHTML = formatRatingHTML(metaNow.avgRating); }
             if (totalEl) totalEl.innerText = productMeta.totalRatings != null ? productMeta.totalRatings : '—';
 
             // Prepare payload
@@ -208,13 +218,18 @@ export function openSidebar() {
                     // Check for runtime errors
                     if (chrome.runtime.lastError) {
                         console.error('ShopSage: runtime.lastError', chrome.runtime.lastError);
-                        if (loader) loader.classList.add('hidden');
+                        if (loader) {
+                            hideElement(loader);
+                        }
                         if (analyzeBtn) analyzeBtn.disabled = false;
                         showError('Ошибка связи с расширением. Перезагрузите страницу и попробуйте снова.');
                         return;
                     }
 
-                    if (loader) loader.classList.add('hidden');
+                    if (loader) {
+                        hideElement(loader);
+                    }
+
                     if (analyzeBtn) analyzeBtn.disabled = false;
 
                     // Check response
@@ -256,12 +271,23 @@ export function openSidebar() {
                 }
             );
         });
+
+        function formatRatingHTML(value) {
+            if (value == null) return '—';
+            const safe = Math.round(value * 10) / 10; // 1 decimal
+            // маленькая SVG-звезда (встроенная)
+            const starSVG = `<svg class="star" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.402 8.167L12 18.896l-7.336 3.868 1.402-8.167L.132 9.21l8.2-1.192z"/></svg>
+`; // если SVG не нужен — emoji тоже подойдёт
+            return `${safe} ${starSVG}`;
+        }
     }
 
     // Render result function
     function renderResult(data, productMeta = {}, reviewsSentCount = 0) {
         // Hide error if showing
-        if (errorEl) errorEl.classList.add('hidden');
+        if (errorEl) {
+            hideElement(errorEl);
+        }
 
         const pros = Array.isArray(data.pros) ? data.pros : [];
         const cons = Array.isArray(data.cons) ? data.cons : [];
@@ -311,9 +337,6 @@ export function openSidebar() {
                 }
             }
         } catch (e) { /* ignore */ }
-
-        if (ratingEl) ratingEl.innerText = pageAvg != null ? pageAvg : '—';
-        if (totalEl) totalEl.innerText = pageTotalRatings != null ? pageTotalRatings : '—';
 
         // ========== Повторный блок: считаем по оценкам (биномиальная модель) ==========
         // Попытка использовать разбиение по звёздам (если есть)
@@ -424,7 +447,9 @@ export function openSidebar() {
 
 
         // Update score UI
-        if (scoreContainer) scoreContainer.classList.remove('hidden');
+        if (scoreContainer) {
+            showElement(scoreContainer);
+        }
         if (scoreBadgeEl) {
             scoreBadgeEl.innerText = composite + '%';
             scoreBadgeEl.style.background = recColor;
@@ -433,18 +458,18 @@ export function openSidebar() {
             scoreBarInner.style.width = composite + '%';
         }
         if (scoreSub) {
-            scoreSub.classList.remove('hidden');
+            showElement(scoreSub);
             const confLow = Math.round(wilson.low * 100);
             const confHigh = Math.round(wilson.high * 100);
             const nLabel = n > 0 ? n : (reviewsSentCount || '—');
             const avgLabel = pageAvg != null ? `${pageAvg}` : '—';
-            scoreSub.innerText = `${rec} — вероятность успеха ≈ ${Math.round(posteriorMean * 100)}% (интервал ${confLow}–${confHigh}%), на основе ${nLabel} оценок; положительных (4–5★): ${k}. Средний рейтинг: ${avgLabel}.`;
+            scoreSub.innerText = `${rec} — вероятность успеха ≈ ${Math.round(posteriorMean * 100)}% (интервал ${confLow}–${confHigh}%), на основе ${nLabel} оценок; положительных (4–5★): ${k}. Средний рейтинг: ${avgLabel}★.`;
         }
 
         // Update count (показываем число найденных отправленных reviews и/или общий totalRatings)
         if (countEl) {
             if (reviewsSentCount != null && reviewsSentCount !== 0) {
-                countEl.innerText = `${reviewsSentCount} (из ${pageTotalRatings != null ? pageTotalRatings : '—'})`;
+                countEl.innerText = `${reviewsSentCount} из ${pageTotalRatings != null ? pageTotalRatings : '—'}`;
             } else {
                 countEl.innerText = pageTotalRatings != null ? pageTotalRatings : '—';
             }
@@ -452,7 +477,8 @@ export function openSidebar() {
 
         // Show result panel
         if (resultEl) {
-            resultEl.classList.remove('hidden');
+            showElement(resultEl);
+
             setTimeout(() => resultEl.classList.add('show'), 30);
         }
 
@@ -466,6 +492,19 @@ export function openSidebar() {
     rootWrapper._shadow = shadow;
     rootWrapper._container = container;
     // keep in DOM
+
+    function hideElement(el) {
+        el.classList.remove('visible');
+        el.classList.add('hidden');
+    }
+
+    function showElement(el) {
+        requestAnimationFrame(() => {
+            el.classList.remove('hidden');
+            el.classList.add('visible');
+        });
+    }
+
 }
 
 /**

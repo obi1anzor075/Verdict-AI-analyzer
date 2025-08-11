@@ -8,7 +8,17 @@
 			<img src="" alt="Verdict Logo" width="32" height="32" id="ss-logo" />
 			<div class="title">Вердикт</div>
 		</div>
-		<button class="ss-close" title="Закрыть" aria-label="Закрыть">✕</button>
+		<div style="display: flex; gap: 8px; align-items: center">
+			<button
+				id="ss-settings"
+				class="ss-close"
+				title="Настройки"
+				aria-label="Открыть настройки"
+			>
+				⚙️
+			</button>
+			<button class="ss-close" title="Закрыть" aria-label="Закрыть">✕</button>
+		</div>
 	</header>
 
 	<main class="ss-body">
@@ -34,6 +44,26 @@
 				aria-live="polite"
 			>
 				<span class="visually-hidden">Загрузка</span>
+			</div>
+
+			<!-- send-to-server toggle + preview -->
+			<div class="ss-send-row" aria-hidden="false">
+				<label
+					for="ss-send-server"
+					style="display: flex; gap: 8px; align-items: center; cursor: pointer"
+				>
+					<input id="ss-send-server" type="checkbox" />
+					<span style="font-size: 12px; color: rgba(207, 230, 255, 0.9)">
+						Отправлять анонимизированные отзывы на сервер
+					</span>
+				</label>
+				<button
+					id="ss-preview-payload"
+					class="btn-secondary"
+					title="Посмотреть что будет отправлено"
+				>
+					Просмотреть payload
+				</button>
 			</div>
 		</div>
 

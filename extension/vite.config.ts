@@ -19,6 +19,9 @@ export default defineConfig({
       },
     },
   },
+    optimizeDeps: {
+    include: ['libphonenumber-js']
+  },
   resolve: {
     alias: {
       '@': '/src', // позволяет писать import from '@/content/utils'

@@ -1,9 +1,21 @@
 // content/sidebar.js
 import { ROOT_ID, APP_ACTION, CHAR_LIMIT, ICON_PATH } from './constants.js';
 import { extractProductMeta, extractRatingBreakdown } from './meta.js';
-import { extractReviews } from './extractors/index.js';
+import { extractReviews, formatRatingHTML } from './extractors/index.js';
+import { buildPayloadPreview, showPreviewModal, showSettingsModal } from './extractors/yandex.js';
 import sidebarHTML from './sidebar/sidebar.html?raw';
 import sidebarCSS from './sidebar/sidebar.css?raw';
+
+const DEFAULT_SETTINGS = {
+    autoAnalyze: false,
+    serverSend: false,
+    minReviews: 5,
+    language: 'ru',
+    analysisDepth: 'medium',
+    showRating: true,
+    debugMode: false,
+    saveHistory: false,
+};
 
 /**
  * Открывает sidebar (создаёт host с shadow-root и вставляет html+css).
@@ -74,6 +86,38 @@ export function openSidebar() {
     const scoreBadgeEl = sr.querySelector('#ss-score-badge');
     const scoreBarInner = sr.querySelector('#ss-score-bar-inner');
     const scoreSub = sr.querySelector('#ss-score-sub');
+
+    // --- SEND toggle + PREVIEW logic (после объявления всех refs) ---
+    const sendToggle = sr.querySelector('#ss-send-server');
+    const previewBtn = sr.querySelector('#ss-preview-payload');
+    const settingBtn = sr.querySelector('#ss-settings');
+
+    // persist change (old behavior kept)
+    if (sendToggle) {
+        sendToggle.addEventListener('change', (e) => {
+            const val = !!e.target.checked;
+            chrome.storage.sync.set({ sendToServer: val });
+        });
+    }
+
+    if (previewBtn) {
+        previewBtn.addEventListener('click', async () => {
+            try {
+                previewBtn.disabled = true;
+                const payload = await buildPayloadPreview();
+                showPreviewModal(sr, payload);
+            } catch (err) {
+                console.error('preview error', err);
+                alert('Ошибка при формировании превью: ' + String(err));
+            } finally {
+                previewBtn.disabled = false;
+            }
+        });
+    }
+
+
+
+
 
     // show animation
     requestAnimationFrame(() => {
@@ -271,15 +315,6 @@ export function openSidebar() {
                 }
             );
         });
-
-        function formatRatingHTML(value) {
-            if (value == null) return '—';
-            const safe = Math.round(value * 10) / 10; // 1 decimal
-            // маленькая SVG-звезда (встроенная)
-            const starSVG = `<svg class="star" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.402 8.167L12 18.896l-7.336 3.868 1.402-8.167L.132 9.21l8.2-1.192z"/></svg>
-`; // если SVG не нужен — emoji тоже подойдёт
-            return `${safe} ${starSVG}`;
-        }
     }
 
     // Render result function

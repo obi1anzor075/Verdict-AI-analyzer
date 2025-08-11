@@ -18,9 +18,12 @@ export function initContent({ ROOT_ID, BTN_ID, ICON_PATH, onOpenSidebar } = {}) 
 
     setupHotkeys({ ROOT_ID, onOpenSidebar });
     // register runtime listener
-    chrome.runtime && chrome.runtime.onMessage && chrome.runtime.onMessage.addListener(handleRuntimeMessage);
-    // cleanup on unload
-    window.addEventListener('unload', cleanupOnUnload);
+    if (chrome.runtime && chrome.runtime.onMessage) {
+        chrome.runtime.onMessage.addListener(handleRuntimeMessage);
+    }
+
+    // cleanup on unload — use safe registration instead of direct `unload`
+    registerSafeUnload(cleanupOnUnload);
 }
 
 /**
@@ -104,10 +107,49 @@ export function setupHotkeys({ ROOT_ID, onOpenSidebar } = {}) {
 
 /**
  * Удаление дублей элементов при выгрузке/перезагрузке скрипта
+ * NOTE: не деструктурируем event — функция может вызываться из registerSafeUnload без аргументов
  */
-export function cleanupOnUnload({ ROOT_ID = 'shopsage-root-v3', BTN_ID = 'shopsage-open-btn-v3' } = {}) {
+export function cleanupOnUnload(event) {
     try {
+        const ROOT_ID = 'shopsage-root-v3';
+        const BTN_ID = 'shopsage-open-btn-v3';
         const r = document.getElementById(ROOT_ID); if (r) r.remove();
         const b = document.getElementById(BTN_ID); if (b) b.remove();
     } catch (e) { /* ignore */ }
+}
+
+/**
+ * Safe unload registration:
+ * uses pagehide + visibilitychange, with beforeunload/unload as fallbacks.
+ * Ensures cleanup runs once.
+ */
+function registerSafeUnload(handler) {
+    if (typeof handler !== 'function') return;
+    let called = false;
+    const safeWrapper = (ev) => {
+        if (called) return;
+        called = true;
+        try { handler(ev); } catch (e) { /* ignore */ }
+    };
+
+    try {
+        if ('onpagehide' in window) {
+            window.addEventListener('pagehide', safeWrapper, { passive: true });
+        }
+    } catch (e) { /* ignore */ }
+
+    try {
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') safeWrapper();
+        }, { passive: true });
+    } catch (e) { /* ignore */ }
+
+    try {
+        window.addEventListener('beforeunload', safeWrapper, { passive: true });
+    } catch (e) { /* ignore */ }
+
+    // try unload as last resort but swallow permission errors
+    try {
+        window.addEventListener('unload', safeWrapper, { passive: true });
+    } catch (e) { /* ignore: may be forbidden by policy */ }
 }

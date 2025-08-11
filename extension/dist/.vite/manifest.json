@@ -5,9 +5,9 @@
     "src": "../../../../../../@crx/manifest",
     "isEntry": true
   },
-  "_index.js-loader-DHr1GnNc.js": {
-    "file": "assets/index.js-loader-DHr1GnNc.js",
-    "src": "_index.js-loader-DHr1GnNc.js"
+  "_index.js-loader-nWGGNT9J.js": {
+    "file": "assets/index.js-loader-nWGGNT9J.js",
+    "src": "_index.js-loader-nWGGNT9J.js"
   },
   "src/background/background.js": {
     "file": "assets/background-CzTBnQwE.js",
@@ -22,7 +22,7 @@
     "isEntry": true
   },
   "src/content/index.js": {
-    "file": "assets/index.js-BNcyZz8V.js",
+    "file": "assets/index.js-Dff91Oo1.js",
     "name": "index.js",
     "src": "src/content/index.js",
     "isEntry": true,

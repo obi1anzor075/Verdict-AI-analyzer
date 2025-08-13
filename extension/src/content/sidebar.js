@@ -2,20 +2,11 @@
 import { ROOT_ID, APP_ACTION, CHAR_LIMIT, ICON_PATH } from './constants.js';
 import { extractProductMeta, extractRatingBreakdown } from './meta.js';
 import { extractReviews, formatRatingHTML } from './extractors/index.js';
-import { buildPayloadPreview, showPreviewModal, showSettingsModal } from './extractors/yandex.js';
+import { buildPayloadPreview } from './extractors/yandex.js';
+import { showPreviewModal, showSettingsModal } from './modals.js';
+import { loadUserSettings } from './utils.js';
 import sidebarHTML from './sidebar/sidebar.html?raw';
 import sidebarCSS from './sidebar/sidebar.css?raw';
-
-const DEFAULT_SETTINGS = {
-    autoAnalyze: false,
-    serverSend: false,
-    minReviews: 5,
-    language: 'ru',
-    analysisDepth: 'medium',
-    showRating: true,
-    debugMode: false,
-    saveHistory: false,
-};
 
 /**
  * Открывает sidebar (создаёт host с shadow-root и вставляет html+css).
@@ -87,10 +78,10 @@ export function openSidebar() {
     const scoreBarInner = sr.querySelector('#ss-score-bar-inner');
     const scoreSub = sr.querySelector('#ss-score-sub');
 
-    // --- SEND toggle + PREVIEW logic (после объявления всех refs) ---
+    // --- Modal logic ---
     const sendToggle = sr.querySelector('#ss-send-server');
-    const previewBtn = sr.querySelector('#ss-preview-payload');
-    const settingBtn = sr.querySelector('#ss-settings');
+    const previewPayloadBtn = sr.querySelector('#ss-preview-payload');
+    const previewSettingBtn = sr.querySelector('#ss-preview-settings');
 
     // persist change (old behavior kept)
     if (sendToggle) {
@@ -100,24 +91,36 @@ export function openSidebar() {
         });
     }
 
-    if (previewBtn) {
-        previewBtn.addEventListener('click', async () => {
+    if (previewPayloadBtn) {
+        previewPayloadBtn.addEventListener('click', async () => {
             try {
-                previewBtn.disabled = true;
+                previewPayloadBtn.disabled = true;
                 const payload = await buildPayloadPreview();
                 showPreviewModal(sr, payload);
             } catch (err) {
                 console.error('preview error', err);
                 alert('Ошибка при формировании превью: ' + String(err));
             } finally {
-                previewBtn.disabled = false;
+                previewPayloadBtn.disabled = false;
             }
         });
     }
 
-
-
-
+    if (previewSettingBtn) {
+        previewSettingBtn.addEventListener('click', async () => {
+            try {
+                previewSettingBtn.disabled = true;
+                const settings = await loadUserSettings();
+                showSettingsModal(sr, settings);
+            } catch (err) {
+                console.error('preview error', err);
+                alert('Ошибка при формировании превью: ' + String(err));
+            } finally {
+                previewSettingBtn.disabled = false;
+            }
+        });
+    }
+    // --- End modal logic ---
 
     // show animation
     requestAnimationFrame(() => {
@@ -180,19 +183,38 @@ export function openSidebar() {
         const CHAR_LIMIT = 15000;
         const SEPARATOR = '\n\n';
 
-        // Get maxReviews from storage
-        chrome.storage.sync.get({ maxReviews: 40, serverUrl: '' }, (items) => {
+        // Get maxReviews
+        chrome.storage.sync.get({ maxReviews: 20, serverUrl: '' }, (items) => {
             const maxReviews = (Number.isFinite(Number(items.maxReviews)) && Number(items.maxReviews) > 0)
-                ? Number(items.maxReviews) : 40;
+                ? Number(items.maxReviews) : 20;
 
             // Extract reviews
-            const candidates = extractReviews(maxReviews);
-            const originalCount = candidates.length;
+            const extraction = extractReviews(maxReviews);
+            let candidates = [];
+            let originalCount = 0;
 
-            if (originalCount === 0) {
-                if (loader) {
-                    hideElement(loader);
-                }
+            if (Array.isArray(extraction)) {
+                // backward compatibility: someone might still return array
+                candidates = extraction;
+                originalCount = extraction.length;
+            } else if (extraction && typeof extraction === 'object') {
+                candidates = extraction.items || [];
+                originalCount = Number.isFinite(Number(extraction.found)) ? extraction.found : (candidates.length || 0);
+            } else {
+                candidates = [];
+                originalCount = 0;
+            }
+
+            // If the page has fewer reviews than user requested — inform in console and proceed with what we have
+            if (originalCount < maxReviews) {
+                console.info(`Verdict: Requested ${maxReviews} reviews but only ${originalCount} found on page. Using available reviews.`);
+                // optional UX: show a non-blocking notice to user
+                // showError(`Найдено только ${originalCount} отзывов — будет проанализировано меньше, чем в настройках.`);
+            }
+
+            // If no candidates found
+            if (!candidates || candidates.length === 0) {
+                if (loader) hideElement(loader);
                 if (analyzeBtn) analyzeBtn.disabled = false;
                 showError('Не найдено отзывов на странице. Попробуйте прокрутить страницу или перейти на страницу с отзывами.');
                 return;
@@ -261,7 +283,7 @@ export function openSidebar() {
                 (resp) => {
                     // Check for runtime errors
                     if (chrome.runtime.lastError) {
-                        console.error('ShopSage: runtime.lastError', chrome.runtime.lastError);
+                        console.error('Verdict: runtime.lastError', chrome.runtime.lastError);
                         if (loader) {
                             hideElement(loader);
                         }
@@ -278,13 +300,13 @@ export function openSidebar() {
 
                     // Check response
                     if (!resp) {
-                        console.error('ShopSage: Empty response from background');
+                        console.error('Verdict: Empty response from background');
                         showError('Не получен ответ от сервера. Проверьте настройки или попробуйте позже.');
                         return;
                     }
 
                     if (!resp.ok) {
-                        console.error('ShopSage: Analysis failed', resp);
+                        console.error('Verdict: Analysis failed', resp);
                         let errorMsg = 'Ошибка анализа';
 
                         if (resp.error) {
@@ -310,7 +332,7 @@ export function openSidebar() {
 
                     // Success - render result
                     const data = resp.data || {};
-                    console.info('ShopSage: Analysis successful', resp);
+                    console.info('Verdict: Analysis successful', resp);
                     renderResult(data, product, reviewsToSend.length);
                 }
             );

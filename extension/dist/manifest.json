@@ -34,7 +34,7 @@
   "content_scripts": [
     {
       "js": [
-        "assets/index.js-loader-DPl3UkaC.js"
+        "assets/index.js-loader-4JgcHa-a.js"
       ],
       "matches": [
         "*://market.yandex.ru/*"
@@ -61,8 +61,8 @@
         "*://market.yandex.ru/*"
       ],
       "resources": [
-        "assets/content-DMhZNfbp.js",
-        "assets/index.js-CO02O45q.js"
+        "assets/content-Bs6sxtKl.js",
+        "assets/index.js-DtJee3lX.js"
       ],
       "use_dynamic_url": false
     }

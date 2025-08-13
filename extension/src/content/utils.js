@@ -1,4 +1,4 @@
-// Агрессивная анонимизация — максимальный охват (Cyrillic + Latin)
+//Anonymize text
 export function anonymizeText(text, { maxLength = 2000 } = {}) {
     if (text === null || text === undefined) return '';
     let s = String(text);
@@ -71,3 +71,68 @@ export function anonymizeText(text, { maxLength = 2000 } = {}) {
 
     return s;
 }
+
+// ключ в localStorage
+const SETTINGS_KEY = 'verdict:userSettings';
+
+/**
+ * Сохранить настройки в localStorage.
+ * @param {Object} settings
+ * @returns {Promise<boolean>}
+ */
+export async function saveUserSettings(settings = {}) {
+    try {
+        const toSave = { ...settings };
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(toSave));
+        return true;
+    } catch (err) {
+        console.error('saveUserSettings error:', err);
+        return false;
+    }
+}
+
+/**
+ * Загрузить настройки из localStorage (без применения дефолтов).
+ * Возвращает пустой объект если ключа нет или JSON некорректен.
+ */
+export function loadUserSettings() {
+    try {
+        const raw = localStorage.getItem(SETTINGS_KEY);
+        if (!raw) return {};
+        return JSON.parse(raw) || {};
+    } catch (e) {
+        console.warn('Ошибка чтения настроек из localStorage:', e);
+        return {};
+    }
+}
+
+/**
+ * Проверяет подписку пользователя. Возвращает Promise<boolean>.
+ * Поддерживает: window.isUserSubscribed(), window.APP.user.isSubscribed, localStorage flags.
+ */
+export async function isUserSubscribed() {
+    try {
+        console.debug('[utils] isUserSubscribed: probing environment');
+        if (typeof window.isUserSubscribed === 'function') {
+            const res = window.isUserSubscribed();
+            if (res && typeof res.then === 'function') return !!(await res);
+            return !!res;
+        }
+        if (window.APP && window.APP.user && typeof window.APP.user.isSubscribed !== 'undefined') {
+            return !!window.APP.user.isSubscribed;
+        }
+        try {
+            const v = localStorage.getItem('IS_SUBSCRIBED') || localStorage.getItem('user_subscribed');
+            if (v === '1' || v === 'true') return true;
+        } catch (e) { /* ignore */ }
+        return false;
+    } catch (e) {
+        console.warn('[utils] isUserSubscribed error', e);
+        return false;
+    }
+}
+
+
+
+
+

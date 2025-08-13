@@ -4,7 +4,7 @@
 import { extractYandexMarketReviews } from './yandex.js';
 import { anonymizeText } from '../utils.js';
 
-export function extractReviews(maxItems = 20) {
+export function extractReviews(maxItems = 10) {
     const isYandexMarket =
         window.location.hostname.includes('market.yandex') ||
         document.title.includes('Яндекс.Маркет') ||

@@ -74,7 +74,8 @@
 }
 
 /* close button */
-.ss-close {
+.ss-close,
+.ss-settings {
   background: transparent;
   border: 0;
   color: rgba(230, 238, 248, 0.9);
@@ -438,202 +439,6 @@
   }
 }
 
-/* Settings Modal Styles */
-#ss-settings-modal {
-  position: fixed;
-  inset: 8% 8% auto auto;
-  z-index: 2147483648;
-  width: 480px;
-  max-height: 84vh;
-  background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
-  color: var(--text);
-  border-radius: var(--radius);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px) saturate(120%);
-  font-family: var(--mono);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transform-origin: right top;
-  animation: modalSlideIn 280ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-#ss-settings-modal .sm-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 16px 18px 14px;
-  border-bottom: 1px solid var(--glass-border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.005));
-}
-
-#ss-settings-modal .sm-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #eaf2ff;
-  margin-bottom: 4px;
-  letter-spacing: 0.2px;
-}
-
-#ss-settings-modal .sm-sub {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.4;
-  max-width: 360px;
-}
-
-#ss-settings-modal .sm-close {
-  background: transparent;
-  border: 0;
-  color: rgba(230, 238, 248, 0.8);
-  cursor: pointer;
-  font-size: 18px;
-  padding: 8px;
-  border-radius: 8px;
-  transition: all 120ms ease;
-  line-height: 1;
-  min-width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#ss-settings-modal .sm-close:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
-  transform: scale(1.05);
-}
-
-#ss-settings-modal .sm-body {
-  padding: 16px 18px;
-  overflow-y: auto;
-  flex: 1;
-  max-height: calc(84vh - 140px);
-}
-
-#ss-settings-modal .setting-group {
-  background: var(--card-bg);
-  border-radius: 10px;
-  padding: 14px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.02);
-}
-
-#ss-settings-modal .setting-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #eaf2ff;
-  margin-bottom: 8px;
-  letter-spacing: 0.1px;
-}
-
-#ss-settings-modal .setting-desc {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.4;
-  margin-bottom: 10px;
-}
-
-#ss-settings-modal .setting-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-}
-
-#ss-settings-modal .setting-option:last-child {
-  border-bottom: none;
-}
-
-#ss-settings-modal .setting-option label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  color: #d7eaff;
-  flex: 1;
-}
-
-#ss-settings-modal .setting-option input[type="checkbox"],
-#ss-settings-modal .setting-option input[type="radio"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--accentA);
-}
-
-#ss-settings-modal .setting-option input[type="range"] {
-  flex: 1;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 2px;
-  outline: none;
-  accent-color: var(--accentA);
-}
-
-#ss-settings-modal .setting-option .range-value {
-  min-width: 30px;
-  text-align: center;
-  color: #fff;
-  font-weight: 600;
-  font-size: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-#ss-settings-modal .sm-actions {
-  display: flex;
-  gap: 10px;
-  padding: 14px 18px;
-  border-top: 1px solid var(--glass-border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.005), rgba(255, 255, 255, 0.02));
-  flex-wrap: wrap;
-}
-
-#ss-settings-modal .btn-save {
-  background: linear-gradient(90deg, var(--accentA), var(--accentB));
-  border: 0;
-  padding: 8px 14px;
-  border-radius: 8px;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 150ms ease;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-#ss-settings-modal .btn-save:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25);
-}
-
-#ss-settings-modal .btn-reset {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 8px 14px;
-  border-radius: 8px;
-  color: var(--text);
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 150ms ease;
-}
-
-#ss-settings-modal .btn-reset:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.12);
-  transform: translateY(-1px);
-}
-
 #ss-preview-modal .pm-header {
   display: flex;
   justify-content: space-between;
@@ -884,7 +689,8 @@
   transform: translateY(0);
 }
 
-#ss-preview-modal .btn-close-action {
+#ss-preview-modal .btn-close-action,
+#ss-settings-modal .btn-close-action {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 8px 14px;
@@ -896,7 +702,8 @@
   transition: all 150ms ease;
 }
 
-#ss-preview-modal .btn-close-action:hover {
+#ss-preview-modal .btn-close-action:hover,
+#ss-settings-modal .btn-close-action:hover {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.12);
   transform: translateY(-1px);
@@ -932,3 +739,410 @@
     flex: 1;
   }
 }
+
+/* Settings Modal Styles */
+#ss-settings-modal {
+  position: fixed;
+  inset: 8% 8% auto auto;
+  z-index: 2147483648;
+  width: 480px;
+  max-height: 84vh;
+  background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
+  color: var(--text);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px) saturate(120%);
+  font-family: var(--mono);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform-origin: right top;
+  animation: modalSlideIn 280ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+#ss-settings-modal .sm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px 14px;
+  border-bottom: 1px solid var(--glass-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.005));
+}
+
+#ss-settings-modal .sm-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #eaf2ff;
+  margin-bottom: 4px;
+  letter-spacing: 0.2px;
+}
+
+#ss-settings-modal .sm-sub {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+  max-width: 360px;
+}
+
+#ss-settings-modal .sm-close {
+  background: transparent;
+  border: 0;
+  color: rgba(230, 238, 248, 0.8);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 120ms ease;
+  line-height: 1;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#ss-settings-modal .sm-close:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+#ss-settings-modal .sm-body {
+  padding: 16px 18px;
+  overflow-y: auto;
+  flex: 1;
+  max-height: calc(84vh - 140px);
+}
+
+#ss-settings-modal .setting-group {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+#ss-settings-modal .setting-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #eaf2ff;
+  margin-bottom: 8px;
+  letter-spacing: 0.1px;
+}
+
+#ss-settings-modal .setting-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+#ss-settings-modal .setting-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+#ss-settings-modal .setting-option:last-child {
+  border-bottom: none;
+}
+
+#ss-settings-modal .setting-option label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #d7eaff;
+  flex: 1;
+}
+
+#ss-settings-modal .setting-option input[type="checkbox"],
+#ss-settings-modal .setting-option input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accentA);
+}
+
+#ss-settings-modal .setting-option input[type="range"] {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  outline: none;
+  accent-color: var(--accentA);
+}
+
+#ss-settings-modal .setting-option .range-value {
+  min-width: 30px;
+  text-align: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+#ss-settings-modal .sm-actions {
+  display: flex;
+  gap: 10px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--glass-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.005), rgba(255, 255, 255, 0.02));
+  flex-wrap: wrap;
+}
+
+#ss-settings-modal .btn-save {
+  background: linear-gradient(90deg, var(--accentA), var(--accentB));
+  border: 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 150ms ease;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#ss-settings-modal .btn-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25);
+}
+
+#ss-settings-modal .btn-reset {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 150ms ease;
+}
+
+#ss-settings-modal .btn-reset:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+/* lock button near range */
+#ss-settings-modal .range-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+#ss-settings-modal .range-lock {
+  position: absolute;
+  right: 42%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.25);
+  border: 0;
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: none; /* показываем динамически через JS */
+  pointer-events: auto;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+  opacity: 0.95;
+}
+
+/* небольшое "мигание" при попытке поставить >10, чтобы дать фидбек */
+#ss-settings-modal .range-lock.lock-flash {
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* маленькая подсказка при наведении (браузер покажет title) */
+#ss-settings-modal .range-lock[title] {
+  /* ничего дополнительно не нужно — title используется */
+}
+
+/* если подписан — не показываем (JS скрывает) */
+#ss-settings-modal .range-lock[aria-hidden="true"] {
+  display: none;
+}
+
+/* feature lock button used next to checkboxes/radios */
+#ss-settings-modal .feature-lock {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 0;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 8px;
+  font-size: 14px;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background 120ms ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* subtle hover */
+#ss-settings-modal .feature-lock:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* make layout of feature-row align nicely */
+#ss-settings-modal .feature-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+/* hide .feature-lock when aria-hidden true (JS toggles) */
+#ss-settings-modal .feature-lock[aria-hidden="true"] {
+  display: none;
+}
+
+/* ensure range-lock still looks good */
+#ss-settings-modal .range-lock {
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: block; /* JS will hide/show as needed */
+}
+
+/* Subscription modal overlay (новый/заменённый) */
+.subscription-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483650;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(180deg, #061226, var(--bg-end));
+}
+
+/* Модалка — в вашем стиле */
+.subscription-modal {
+  width: 440px;
+  max-width: calc(100% - 48px);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #061226, #071431);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  font-family: var(--mono);
+  transform-origin: center;
+  animation: subsModalIn 220ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  backdrop-filter: blur(8px) saturate(110%);
+}
+
+/* Анимация входа */
+@keyframes subsModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Заголовок модалки — стиль в духе вашего UI */
+.subscription-modal .subscription-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #eaf2ff;
+}
+
+/* Текст */
+.subscription-modal .subscription-message {
+  margin: 0 0 14px 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Кнопки */
+.subscription-buy {
+  background: linear-gradient(90deg, var(--accentA), var(--accentB));
+  border: 0;
+  padding: 9px 14px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 28px var(--accentGlow);
+  transition: all 150ms ease;
+}
+.subscription-buy:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25);
+}
+
+.subscription-cancel {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.subscription-cancel:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.subscription-close {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  background: transparent;
+  border: 0;
+  color: rgba(230, 238, 248, 0.8);
+  font-size: 18px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  transition: all 120ms ease;
+  line-height: 1;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subscription-close:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/*End of Settings Modal Styles */

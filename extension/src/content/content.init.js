@@ -120,8 +120,9 @@ export function cleanupOnUnload(event) {
 
 /**
  * Safe unload registration:
- * uses pagehide + visibilitychange, with beforeunload/unload as fallbacks.
- * Ensures cleanup runs once.
+ * uses pagehide with beforeunload/unload as fallbacks.
+ * IMPORTANT: do NOT use visibilitychange to trigger cleanup on "hidden" —
+ * that fires on minimize/tab-switch and causes UI to be removed unexpectedly.
  */
 function registerSafeUnload(handler) {
     if (typeof handler !== 'function') return;
@@ -138,18 +139,16 @@ function registerSafeUnload(handler) {
         }
     } catch (e) { /* ignore */ }
 
-    try {
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') safeWrapper();
-        }, { passive: true });
-    } catch (e) { /* ignore */ }
+    // Don't call cleanup on visibilitychange — it fires on minimize/tab switch.
+    // If you absolutely need visibility hooks, handle only the "visible" state for restoring UI,
+    // not for removing it.
 
     try {
         window.addEventListener('beforeunload', safeWrapper, { passive: true });
     } catch (e) { /* ignore */ }
 
-    // try unload as last resort but swallow permission errors
     try {
         window.addEventListener('unload', safeWrapper, { passive: true });
-    } catch (e) { /* ignore: may be forbidden by policy */ }
+    } catch (e) { /* ignore */ }
 }
+

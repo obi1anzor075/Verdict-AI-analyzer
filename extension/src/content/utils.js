@@ -1,3 +1,4 @@
+
 //Anonymize text
 export function anonymizeText(text, { maxLength = 2000 } = {}) {
     if (text === null || text === undefined) return '';
@@ -75,6 +76,18 @@ export function anonymizeText(text, { maxLength = 2000 } = {}) {
 // ключ в localStorage
 const SETTINGS_KEY = 'verdict:userSettings';
 
+export const DEFAULT_SETTINGS = {
+    autoAnalyze: false,
+    serverSend: false,
+    maxReviews: 5,
+    language: 'ru',
+    analysisDepth: 'medium',
+    showRating: true,
+    debugMode: false,
+    saveHistory: false,
+    darkMode: true
+};
+
 /**
  * Сохранить настройки в localStorage.
  * @param {Object} settings
@@ -132,6 +145,22 @@ export async function isUserSubscribed() {
     }
 }
 
+
+/**
+ * Возвращает максимальное кол-во отзывов для анализа
+ */
+export function getMaxReviewsAllowed() {
+    const settings = loadUserSettings() || {};
+    const raw = settings.maxReviews;
+
+    const num = Number(raw);
+    if (Number.isFinite(num) && !Number.isNaN(num)) {
+        const intVal = Math.trunc(num);
+        return intVal >= 0 ? intVal : DEFAULT_SETTINGS.maxReviews;
+    }
+
+    return DEFAULT_SETTINGS.maxReviews;
+}
 
 
 

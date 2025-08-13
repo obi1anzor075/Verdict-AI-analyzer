@@ -2,9 +2,10 @@
 // Фолбэк-извлечение отзывов для общих сайтов.
 // Возвращает массив строк (текстов отзывов).
 import { extractYandexMarketReviews } from './yandex.js';
-import { anonymizeText } from '../utils.js';
+import { anonymizeText, getMaxReviewsAllowed } from '../utils.js';
 
 export function extractReviews(maxItems = 10) {
+    maxItems = getMaxReviewsAllowed();
     const isYandexMarket =
         window.location.hostname.includes('market.yandex') ||
         document.title.includes('Яндекс.Маркет') ||

@@ -1,18 +1,6 @@
 // modals.js
 // This file contains the implementation of modal-related functionality
-import { saveUserSettings, loadUserSettings, isUserSubscribed } from './utils.js';
-
-const DEFAULT_SETTINGS = {
-    autoAnalyze: false,
-    serverSend: false,
-    maxReviews: 5,
-    language: 'ru',
-    analysisDepth: 'medium',
-    showRating: true,
-    debugMode: false,
-    saveHistory: false,
-    darkMode: true
-};
+import { saveUserSettings, loadUserSettings, isUserSubscribed, DEFAULT_SETTINGS  } from './utils.js';
 
 // show modal inside shadow — improved
 export function showPreviewModal(sr, payload = {}) {

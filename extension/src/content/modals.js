@@ -5,7 +5,7 @@ import { saveUserSettings, loadUserSettings, isUserSubscribed } from './utils.js
 const DEFAULT_SETTINGS = {
     autoAnalyze: false,
     serverSend: false,
-    minReviews: 5,
+    maxReviews: 5,
     language: 'ru',
     analysisDepth: 'medium',
     showRating: true,
@@ -284,7 +284,7 @@ export function showSettingsModal(sr, settings = {}) {
     const modal = document.createElement('div');
     modal.id = 'ss-settings-modal';
 
-    const initialMax = (mergedSettings.maxReviews ?? mergedSettings.minReviews ?? DEFAULT_SETTINGS.maxReviews ?? DEFAULT_SETTINGS.minReviews ?? 5);
+    const initialMax = (mergedSettings.maxReviews ?? DEFAULT_SETTINGS.maxReviews ?? 5);
 
     // Added inline lock buttons for the features we block for free users.
     modal.innerHTML = `
@@ -659,13 +659,13 @@ export function showSettingsModal(sr, settings = {}) {
     }
 
     function getCurrentSettings() {
-        const rawVal = parseInt(modal.querySelector('#set-max-reviews')?.value, 10) || (DEFAULT_SETTINGS.maxReviews ?? DEFAULT_SETTINGS.minReviews ?? 5);
+        const rawVal = parseInt(modal.querySelector('#set-max-reviews')?.value, 10) || (DEFAULT_SETTINGS.maxReviews ?? 5);
         const finalVal = (!isSubscribed && rawVal > 10) ? 10 : rawVal;
         return {
             autoAnalyze: !!modal.querySelector('#set-auto-analyze')?.checked,
             serverSend: !!modal.querySelector('#set-server-send')?.checked,
             maxReviews: finalVal,
-            minReviews: finalVal, // backward-compat
+            maxReviews: finalVal,
             language: modal.querySelector('#set-language')?.value || 'ru',
             analysisDepth: modal.querySelector('input[name="analysis-depth"]:checked')?.value || 'medium',
             showRating: !!modal.querySelector('#set-show-rating')?.checked,
@@ -677,9 +677,9 @@ export function showSettingsModal(sr, settings = {}) {
     function applyDefaultsToForm() {
         modal.querySelector('#set-auto-analyze').checked = DEFAULT_SETTINGS.autoAnalyze;
         modal.querySelector('#set-server-send').checked = DEFAULT_SETTINGS.serverSend;
-        modal.querySelector('#set-max-reviews').value = (DEFAULT_SETTINGS.maxReviews ?? DEFAULT_SETTINGS.minReviews ?? 5);
+        modal.querySelector('#set-max-reviews').value = (DEFAULT_SETTINGS.maxReviews ?? 5);
         const vEl = modal.querySelector('#max-reviews-value');
-        if (vEl) vEl.textContent = String(DEFAULT_SETTINGS.maxReviews ?? DEFAULT_SETTINGS.minReviews ?? 5);
+        if (vEl) vEl.textContent = String(DEFAULT_SETTINGS.maxReviews ?? 5);
         modal.querySelector('#set-language').value = DEFAULT_SETTINGS.language;
         const radio = modal.querySelector(`input[name="analysis-depth"][value="${DEFAULT_SETTINGS.analysisDepth}"]`);
         if (radio) radio.checked = true;
@@ -704,7 +704,7 @@ export function showSettingsModal(sr, settings = {}) {
         try {
             localStorage.removeItem(SETTINGS_KEY);
             if (typeof saveUserSettings === 'function') {
-                await saveUserSettings({ ...(DEFAULT_SETTINGS || {}), maxReviews: (DEFAULT_SETTINGS.maxReviews ?? DEFAULT_SETTINGS.minReviews ?? 5), minReviews: (DEFAULT_SETTINGS.maxReviews ?? DEFAULT_SETTINGS.minReviews ?? 5) });
+                await saveUserSettings({ ...(DEFAULT_SETTINGS || {}), maxReviews: (DEFAULT_SETTINGS.maxReviews ?? 5), maxReviews: (DEFAULT_SETTINGS.maxReviews ?? 5) });
             }
         } catch (e) {
             console.warn('Не удалось удалить/сохранить ключ настроек:', e);

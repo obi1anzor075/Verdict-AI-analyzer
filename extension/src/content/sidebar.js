@@ -488,13 +488,13 @@ export function openSidebar() {
 
         // Recommendation
         let rec = '', recColor = '';
-        if (composite >= 75) {
+        if (composite >= 85) {
             rec = 'Однозначно стоит выбрать';
             recColor = 'linear-gradient(90deg,#a3e635,#10b981)';
-        } else if (composite >= 60) {
+        } else if (composite >= 70) {
             rec = 'В целом рекомендуем';
             recColor = 'linear-gradient(90deg,#facc15,#84cc16)';
-        } else if (composite >= 45) {
+        } else if (composite >= 55) {
             rec = 'Стоит взвесить плюсы и минусы';
             recColor = 'linear-gradient(90deg,#f59e0b,#f97316)';
         } else {

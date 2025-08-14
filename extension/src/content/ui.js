@@ -1,3 +1,5 @@
+import { isRatingEnabled, queryDeep } from './utils'
+
 // content/ui.js
 /**
  * Создаёт и возвращает плавающую кнопку (не вставляет в DOM автоматически)
@@ -40,4 +42,61 @@ export function createFloatingButton({ id, title = 'Open', iconPath }) {
     btn.addEventListener('mouseleave', () => btn.style.transform = 'none');
 
     return btn;
+}
+
+
+function hideElementForAccessibility(el) {
+    if (!el) return;
+    el.classList.add('hidden');      // если у тебя есть CSS-класс .hidden — будет использоваться
+    el.style.display = 'none';       // запасной вариант
+    el.setAttribute('aria-hidden', 'true');
+    // если нужно убрать из таб-индекса:
+    el.querySelectorAll('[tabindex]').forEach(node => node.setAttribute('tabindex', '-1'));
+}
+
+function showElementForAccessibility(el) {
+    if (!el) return;
+    el.classList.remove('hidden');
+    el.style.display = '';
+    el.setAttribute('aria-hidden', 'false');
+    // можно восстановить tabindex при необходимости (без контекста не трогаю)
+}
+
+/**
+ * Обновляет видимость блока с рейтингом.
+ * Ищем элемент по id="ss-rating" -> берем его родительский <div class="muted">.
+ */
+export function updateRatingVisibility() {
+    const ratingNode = queryDeep('#ss-rating');
+    if (!ratingNode) {
+        console.log("Рейтинг не найден");
+        return;
+    }
+
+    // предполагаем, что контейнер — ближайший родитель (div.muted)
+    const ratingContainer = ratingNode.closest && ratingNode.closest('.muted') || ratingNode.parentElement;
+    if (!ratingContainer) return;
+
+    // если есть функция isRatingEnabled в глобальной области
+    let enabled = true;
+    try {
+        if (typeof isRatingEnabled === 'function') {
+            enabled = Boolean(isRatingEnabled());
+        } else if (typeof loadUserSettings === 'function') {
+            // запасной вариант — напрямую читать настройки
+            const settings = loadUserSettings() || {};
+            enabled = Boolean(settings.showRating ?? true);
+        } else {
+            enabled = true; // по-умолчанию показываем
+        }
+    } catch (e) {
+        console.warn('Не удалось проверить настройку showRating:', e);
+        enabled = true;
+    }
+
+    if (enabled) {
+        showElementForAccessibility(ratingContainer);
+    } else {
+        hideElementForAccessibility(ratingContainer);
+    }
 }

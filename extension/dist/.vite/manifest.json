@@ -5,9 +5,13 @@
     "src": "../../../../../../@crx/manifest",
     "isEntry": true
   },
-  "_index.js-loader-D2n0Q8bG.js": {
-    "file": "assets/index.js-loader-D2n0Q8bG.js",
-    "src": "_index.js-loader-D2n0Q8bG.js"
+  "_content.init-lE8KZG5m.js": {
+    "file": "assets/content.init-lE8KZG5m.js",
+    "name": "content.init"
+  },
+  "_index.js-loader-D7i7wZNl.js": {
+    "file": "assets/index.js-loader-D7i7wZNl.js",
+    "src": "_index.js-loader-D7i7wZNl.js"
   },
   "src/background/background.js": {
     "file": "assets/background-CzTBnQwE.js",
@@ -16,18 +20,21 @@
     "isEntry": true
   },
   "src/content/content.init.js": {
-    "file": "assets/content-Bs6sxtKl.js",
+    "file": "assets/content-PsMlWQZc.js",
     "name": "content",
     "src": "src/content/content.init.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_content.init-lE8KZG5m.js"
+    ]
   },
   "src/content/index.js": {
-    "file": "assets/index.js-BNqT13Ad.js",
+    "file": "assets/index.js-Dg5YC3Sd.js",
     "name": "index.js",
     "src": "src/content/index.js",
     "isEntry": true,
     "imports": [
-      "src/content/content.init.js"
+      "_content.init-lE8KZG5m.js"
     ]
   }
 }

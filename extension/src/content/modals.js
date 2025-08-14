@@ -1,6 +1,8 @@
 // modals.js
 // This file contains the implementation of modal-related functionality
-import { saveUserSettings, loadUserSettings, isUserSubscribed, DEFAULT_SETTINGS  } from './utils.js';
+import { DEFAULT_SETTINGS } from './constants.js';
+import { saveUserSettings, loadUserSettings, isUserSubscribed } from './utils.js';
+import { updateRatingVisibility } from './ui.js';
 
 // show modal inside shadow — improved
 export function showPreviewModal(sr, payload = {}) {
@@ -295,13 +297,6 @@ export function showSettingsModal(sr, settings = {}) {
               <span>Автоматически анализировать при загрузке страницы</span>
             </label>
             <button type="button" class="feature-lock" data-feature="autoAnalyze" title="Доступно по подписке">🔒</button>
-          </div>
-
-          <div class="setting-option">
-            <label>
-              <input type="checkbox" id="set-server-send" ${mergedSettings.serverSend ? 'checked' : ''}>
-              По умолчанию отправлять данные на сервер
-            </label>
           </div>
 
           <div class="setting-option" style="position:relative;">
@@ -651,7 +646,6 @@ export function showSettingsModal(sr, settings = {}) {
         const finalVal = (!isSubscribed && rawVal > 10) ? 10 : rawVal;
         return {
             autoAnalyze: !!modal.querySelector('#set-auto-analyze')?.checked,
-            serverSend: !!modal.querySelector('#set-server-send')?.checked,
             maxReviews: finalVal,
             maxReviews: finalVal,
             language: modal.querySelector('#set-language')?.value || 'ru',
@@ -664,7 +658,6 @@ export function showSettingsModal(sr, settings = {}) {
 
     function applyDefaultsToForm() {
         modal.querySelector('#set-auto-analyze').checked = DEFAULT_SETTINGS.autoAnalyze;
-        modal.querySelector('#set-server-send').checked = DEFAULT_SETTINGS.serverSend;
         modal.querySelector('#set-max-reviews').value = (DEFAULT_SETTINGS.maxReviews ?? 5);
         const vEl = modal.querySelector('#max-reviews-value');
         if (vEl) vEl.textContent = String(DEFAULT_SETTINGS.maxReviews ?? 5);
@@ -720,8 +713,22 @@ export function showSettingsModal(sr, settings = {}) {
         } catch (e) {
             console.error('Ошибка при сохранении настроек:', e);
         }
+
         const event = new CustomEvent('settingsChanged', { detail: newSettings, bubbles: true, composed: true });
-        try { sr.dispatchEvent(event); } catch (e) { modal.dispatchEvent(event); }
+        try {
+            sr.dispatchEvent(event);
+        } catch (e) {
+            modal.dispatchEvent(event);
+        }
+
+        // Обновляем видимость рейтинга сразу на текущей странице
+        try {
+            if (typeof updateRatingVisibility === 'function') {
+                updateRatingVisibility();
+            }
+        } catch (err) {
+            console.warn('Ошибка при обновлении видимости рейтинга:', err);
+        }
 
         const originalText = btnSave.querySelector('.btn-text')?.textContent || 'Сохранить';
         const textEl = btnSave.querySelector('.btn-text');
@@ -733,6 +740,7 @@ export function showSettingsModal(sr, settings = {}) {
             removeModal();
         }, 1200);
     });
+
 
     function onKeyDown(ev) {
         if (ev.key === 'Escape') removeModal();

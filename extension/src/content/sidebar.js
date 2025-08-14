@@ -5,6 +5,7 @@ import { extractReviews, formatRatingHTML } from './extractors/index.js';
 import { buildPayloadPreview } from './extractors/yandex.js';
 import { showPreviewModal, showSettingsModal } from './modals.js';
 import { loadUserSettings } from './utils.js';
+import { updateRatingVisibility } from './ui.js';
 import sidebarHTML from './sidebar/sidebar.html?raw';
 import sidebarCSS from './sidebar/sidebar.css?raw';
 
@@ -58,6 +59,9 @@ export function openSidebar() {
 
     // append host to body
     document.body.appendChild(rootWrapper);
+
+    //update visibility rating
+    updateRatingVisibility();
 
     // store references to elements inside shadow
     const sr = shadow;
@@ -520,6 +524,7 @@ export function openSidebar() {
             const confHigh = Math.round(wilson.high * 100);
             const nLabel = n > 0 ? n : (reviewsSentCount || '—');
             const avgLabel = pageAvg != null ? `${pageAvg}` : '—';
+
             scoreSub.innerText = `${rec} — вероятность успеха ≈ ${Math.round(posteriorMean * 100)}% (интервал ${confLow}–${confHigh}%), на основе ${nLabel} оценок; положительных (4–5★): ${k}. Средний рейтинг: ${avgLabel}★.`;
         }
 

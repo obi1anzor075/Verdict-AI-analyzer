@@ -1,4 +1,4 @@
-
+import { SETTINGS_KEY, DEFAULT_SETTINGS } from './constants.js'
 //Anonymize text
 export function anonymizeText(text, { maxLength = 2000 } = {}) {
     if (text === null || text === undefined) return '';
@@ -73,21 +73,6 @@ export function anonymizeText(text, { maxLength = 2000 } = {}) {
     return s;
 }
 
-// ключ в localStorage
-const SETTINGS_KEY = 'verdict:userSettings';
-
-export const DEFAULT_SETTINGS = {
-    autoAnalyze: false,
-    serverSend: false,
-    maxReviews: 5,
-    language: 'ru',
-    analysisDepth: 'medium',
-    showRating: true,
-    debugMode: false,
-    saveHistory: false,
-    darkMode: true
-};
-
 /**
  * Сохранить настройки в localStorage.
  * @param {Object} settings
@@ -110,14 +95,17 @@ export async function saveUserSettings(settings = {}) {
  */
 export function loadUserSettings() {
     try {
+        if (typeof window === 'undefined' || !('localStorage' in window)) return {};
         const raw = localStorage.getItem(SETTINGS_KEY);
         if (!raw) return {};
-        return JSON.parse(raw) || {};
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : {};
     } catch (e) {
         console.warn('Ошибка чтения настроек из localStorage:', e);
         return {};
     }
 }
+
 
 /**
  * Проверяет подписку пользователя. Возвращает Promise<boolean>.
@@ -162,6 +150,32 @@ export function getMaxReviewsAllowed() {
     return DEFAULT_SETTINGS.maxReviews;
 }
 
+/**
+ * Возвращает включено ли отображение рейтинга
+ */
+export function isRatingEnabled() {
+    const user = loadUserSettings() || {};
+    const settings = { ...DEFAULT_SETTINGS, ...user };
+    return Boolean(settings.showRating);
+}
 
+/**
+ * Ищет элемент в shadow DOM
+ */
+export function queryDeep(selector, root = document) {
+    // обычный поиск
+    const direct = root.querySelector(selector);
+    if (direct) return direct;
 
+    // ищем в теневых корнях рекурсивно
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null, false);
+    let node;
+    while (node = walker.nextNode()) {
+        if (node.shadowRoot) {
+            const found = queryDeep(selector, node.shadowRoot);
+            if (found) return found;
+        }
+    }
+    return null;
+}
 

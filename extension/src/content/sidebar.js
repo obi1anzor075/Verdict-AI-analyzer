@@ -4,7 +4,7 @@ import { extractProductMeta, extractRatingBreakdown } from './meta.js';
 import { extractReviews, formatRatingHTML } from './extractors/index.js';
 import { buildPayloadPreview } from './extractors/yandex.js';
 import { showPreviewModal, showSettingsModal } from './modals.js';
-import { loadUserSettings } from './utils.js';
+import { loadUserSettings, getAnalysisDepth } from './utils.js';
 import { updateRatingVisibility } from './ui.js';
 import sidebarHTML from './sidebar/sidebar.html?raw';
 import sidebarCSS from './sidebar/sidebar.css?raw';
@@ -187,10 +187,28 @@ export function openSidebar() {
         const CHAR_LIMIT = 15000;
         const SEPARATOR = '\n\n';
 
+
+
         // Get maxReviews
         chrome.storage.sync.get({ maxReviews: 20, serverUrl: '' }, (items) => {
             const maxReviews = (Number.isFinite(Number(items.maxReviews)) && Number(items.maxReviews) > 0)
                 ? Number(items.maxReviews) : 20;
+
+            // get analysis depth from settings (expects "fast" | "medium" | "deep" or numeric fallback)
+            const rawDepth = (typeof getAnalysisDepth === 'function') ? String(getAnalysisDepth()).trim().toLowerCase() : 'medium';
+            const allowed = ['fast', 'medium', 'deep'];
+            let analysisDepth = 'medium';
+
+            // accept textual modes or numeric fallbacks (1->fast,2->medium,3->deep)
+            if (allowed.includes(rawDepth)) {
+                analysisDepth = rawDepth;
+            } else if (rawDepth === '1' || rawDepth === 'fast') {
+                analysisDepth = 'fast';
+            } else if (rawDepth === '3' || rawDepth === 'deep') {
+                analysisDepth = 'deep';
+            } else {
+                analysisDepth = 'medium';
+            }
 
             // Extract reviews
             const extraction = extractReviews(maxReviews);
@@ -253,8 +271,6 @@ export function openSidebar() {
                 }
             }
 
-
-
             // Extract fresh metadata
             const productMeta = extractProductMeta();
             if (ratingEl) { ratingEl.innerHTML = formatRatingHTML(metaNow.avgRating); }
@@ -282,7 +298,8 @@ export function openSidebar() {
                     action: APP_ACTION,
                     reviews: reviewsToSend,
                     product: product,
-                    serverUrl: items.serverUrl || ''
+                    serverUrl: items.serverUrl || '',
+                    analysisDepth: analysisDepth
                 },
                 (resp) => {
                     // Check for runtime errors
@@ -337,21 +354,28 @@ export function openSidebar() {
                     // Success - render result
                     const data = resp.data || {};
                     console.info('Verdict: Analysis successful', resp);
-                    renderResult(data, product, reviewsToSend.length);
+                    renderResult(data, product, reviewsToSend.length, analysisDepth);
                 }
             );
         });
     }
 
     // Render result function
-    function renderResult(data, productMeta = {}, reviewsSentCount = 0) {
+    function renderResult(data, productMeta = {}, reviewsSentCount = 0, depth = 'standard') {
         // Hide error if showing
         if (errorEl) {
             hideElement(errorEl);
         }
 
-        const pros = Array.isArray(data.pros) ? data.pros : [];
-        const cons = Array.isArray(data.cons) ? data.cons : [];
+        const depthMap = {
+            fast: 3,
+            medium: 5,
+            deep: 7
+        };
+        const limit = depthMap[depth] || 5;
+
+        const pros = Array.isArray(data.pros) ? data.pros.slice(0, limit) : [];
+        const cons = Array.isArray(data.cons) ? data.cons.slice(0, limit) : [];
 
         if (prosEl) {
             prosEl.innerHTML = '';

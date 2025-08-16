@@ -140,21 +140,45 @@ async function fetchAccessTokenIfNeeded() {
 app.post("/analyze", async (req, res) => {
   try {
     console.log("--- /analyze called ---");
-    const { reviews = [], product = {} } = req.body;
+    const { reviews = [], product = {}, analysisDepth = 'medium' } = req.body;
+
     if (!Array.isArray(reviews) || reviews.length === 0) {
       return res.status(400).json({ error: "No reviews provided" });
     }
 
+    // normalize depth
+    const depth = String(analysisDepth || 'medium').toLowerCase();
+    console.log("Requested analysis depth:", depth);
+
+    // Configure behavior by depth
+    let maxToSend = 60;
+    let maxOutputTokens = 1000;
+    let depthInstruction = "";
+
+    if (depth === 'fast') {
+      maxToSend = 10;
+      maxOutputTokens = 400;
+      depthInstruction = "Keep the analysis short and concise. Provide very brief bullet-like pros/cons(up to 3 each) and a one-line verdict.";
+    } else if (depth === 'deep') {
+      maxToSend = 60;
+      maxOutputTokens = 2000;
+      depthInstruction = "Perform a deep analysis: provide detailed pros/cons(up to 12 each), group similar points, give nuanced reasoning and a clear multi-sentence verdict.";
+    } else {
+      // medium (default)
+      maxToSend = 30;
+      maxOutputTokens = 1000;
+      depthInstruction = "Provide a balanced analysis: short bullet-like pros/cons (up to 6 each) and a brief verdict.";
+    }
+
     // limit + trim
-    const maxToSend = 60;
     const trimmed = reviews.slice(0, maxToSend).map(r => (r || "").replace(/\s+/g, " ").trim()).join("\n\n");
-    console.log("Sending reviews length:", trimmed.length);
+    console.log("Sending reviews length:", trimmed.length, "maxToSend:", maxToSend);
 
-    // Prompt — жёстко просим вернуть JSON OR даём нормальную выборку текста для парсинга
+    // Prompt — demand JSON but include depthInstruction
     const system = "You are an expert that analyzes user reviews. Respond ONLY with JSON in the format: {\"pros\":[...],\"cons\":[...],\"verdict\":\"...\",\"confidence\":0.0}";
-    const user = `Analyze the following reviews and return ONLY valid JSON in the format above. Give short bullet-like pros and cons (max 12 each) and a short verdict.\n\nReviews:\n${trimmed}`;
+    const user = `Analysis depth: ${depth}. ${depthInstruction}\n\nAnalyze the following reviews and return ONLY valid JSON in the format above. Give short bullet-like pros and cons (max 12 each) and a short verdict.\n\nReviews:\n${trimmed}`;
 
-    // Build GigaChat messages (GigaChat expects 'content' field)
+    // Build GigaChat messages
     const messages = [
       { role: "system", content: system },
       { role: "user", content: user }
@@ -166,15 +190,14 @@ app.post("/analyze", async (req, res) => {
     const payload = {
       model: MODEL,
       messages,
-      // controls — keep deterministic
       temperature: 0.0,
-      max_output_tokens: 1000
-      // you can add more model specific params here if needed
+      max_output_tokens: maxOutputTokens
     };
 
     const url = `${BASE_URL.replace(/\/+$/, "")}/chat/completions`;
     console.log("Requesting GigaChat...", url);
 
+    // ... (rest of fetch & response parsing unchanged)
     const agent = INSECURE ? new https.Agent({ rejectUnauthorized: false }) : undefined;
     const resp = await fetch(url, {
       method: "POST",

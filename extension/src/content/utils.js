@@ -138,7 +138,8 @@ export async function isUserSubscribed() {
  * Возвращает максимальное кол-во отзывов для анализа
  */
 export function getMaxReviewsAllowed() {
-    const settings = loadUserSettings() || {};
+    const userSettings = loadUserSettings() || {};
+    const settings = { ...DEFAULT_SETTINGS, ...userSettings };
     const raw = settings.maxReviews;
 
     const num = Number(raw);
@@ -154,9 +155,18 @@ export function getMaxReviewsAllowed() {
  * Возвращает включено ли отображение рейтинга
  */
 export function isRatingEnabled() {
-    const user = loadUserSettings() || {};
-    const settings = { ...DEFAULT_SETTINGS, ...user };
+    const userSettings = loadUserSettings() || {};
+    const settings = { ...DEFAULT_SETTINGS, ...userSettings };
     return Boolean(settings.showRating);
+}
+
+/**
+ * Возвращает значение режима анализа отзывов
+ */
+export function getAnalysisDepth() {
+    const userSettings = loadUserSettings();
+    const settings = { ...DEFAULT_SETTINGS, ...userSettings };
+    return String(settings.analysisDepth);
 }
 
 /**

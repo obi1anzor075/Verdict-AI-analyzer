@@ -289,15 +289,6 @@ export function showSettingsModal(sr, settings = {}) {
       <div class="sm-body">
         <div class="setting-group">
           <div class="setting-title">Анализ отзывов</div>
-          <div class="setting-desc">Параметры автоматического анализа и обработки</div>
-
-          <div class="setting-option feature-row">
-            <label style="display:flex; align-items:center; gap:8px; flex:1; cursor: pointer;">
-              <input type="checkbox" id="set-auto-analyze" ${mergedSettings.autoAnalyze ? 'checked' : ''}>
-              <span>Автоматически анализировать при загрузке страницы</span>
-            </label>
-            <button type="button" class="feature-lock" data-feature="autoAnalyze" title="Доступно по подписке">🔒</button>
-          </div>
 
           <div class="setting-option" style="position:relative;">
             <label style="flex-direction: column; align-items: flex-start; gap: 6px; width:100%;">
@@ -405,8 +396,6 @@ export function showSettingsModal(sr, settings = {}) {
     const maxReviewsValue = modal.querySelector('#max-reviews-value');
     const rangeLockBtn = modal.querySelector('#max-range-lock');
 
-    // new: feature nodes & lock buttons
-    const autoAnalyzeInput = modal.querySelector('#set-auto-analyze');
     const saveHistoryInput = modal.querySelector('#set-save-history');
     const deepRadio = modal.querySelector('input[name="analysis-depth"][value="deep"]');
     const mediumRadio = modal.querySelector('input[name="analysis-depth"][value="medium"]');
@@ -527,17 +516,13 @@ export function showSettingsModal(sr, settings = {}) {
                 }
                 deepRadio.disabled = true;
             }
-            if (autoAnalyzeInput) {
-                autoAnalyzeInput.checked = false;
-                autoAnalyzeInput.disabled = true;
-            }
+
             if (saveHistoryInput) {
                 saveHistoryInput.checked = false;
                 saveHistoryInput.disabled = true;
             }
         } else {
             if (deepRadio) deepRadio.disabled = false;
-            if (autoAnalyzeInput) autoAnalyzeInput.disabled = false;
             if (saveHistoryInput) saveHistoryInput.disabled = false;
         }
     }
@@ -569,18 +554,9 @@ export function showSettingsModal(sr, settings = {}) {
     });
 
     // Also attach prevention handlers so user can't toggle disabled inputs via label click:
-    // For autoAnalyze and saveHistory, labels surround the inputs — intercept click on label
+    // For saveHistory, labels surround the inputs — intercept click on label
     const autoRow = modal.querySelector('.setting-option .feature-row label[for="set-auto-analyze"]') || null;
-    // safer: attach to closest label parent of the input
-    const autoLabel = autoAnalyzeInput ? autoAnalyzeInput.closest('label') : null;
-    if (autoLabel) {
-        autoLabel.addEventListener('click', (ev) => {
-            if (!isSubscribed) {
-                ev.preventDefault();
-                openSubscriptionModalOnce();
-            }
-        });
-    }
+
     const saveLabel = saveHistoryInput ? saveHistoryInput.closest('label') : null;
     if (saveLabel) {
         saveLabel.addEventListener('click', (ev) => {
@@ -645,7 +621,6 @@ export function showSettingsModal(sr, settings = {}) {
         const rawVal = parseInt(modal.querySelector('#set-max-reviews')?.value, 10) || (DEFAULT_SETTINGS.maxReviews ?? 5);
         const finalVal = (!isSubscribed && rawVal > 10) ? 10 : rawVal;
         return {
-            autoAnalyze: !!modal.querySelector('#set-auto-analyze')?.checked,
             maxReviews: finalVal,
             maxReviews: finalVal,
             language: modal.querySelector('#set-language')?.value || 'ru',
@@ -657,7 +632,6 @@ export function showSettingsModal(sr, settings = {}) {
     }
 
     function applyDefaultsToForm() {
-        modal.querySelector('#set-auto-analyze').checked = DEFAULT_SETTINGS.autoAnalyze;
         modal.querySelector('#set-max-reviews').value = (DEFAULT_SETTINGS.maxReviews ?? 5);
         const vEl = modal.querySelector('#max-reviews-value');
         if (vEl) vEl.textContent = String(DEFAULT_SETTINGS.maxReviews ?? 5);
@@ -676,7 +650,6 @@ export function showSettingsModal(sr, settings = {}) {
         // ensure blocked features remain off for free users
         if (!isSubscribed) {
             if (deepRadio && deepRadio.checked && mediumRadio) { deepRadio.checked = false; mediumRadio.checked = true; }
-            if (autoAnalyzeInput) { autoAnalyzeInput.checked = false; autoAnalyzeInput.disabled = true; }
             if (saveHistoryInput) { saveHistoryInput.checked = false; saveHistoryInput.disabled = true; }
         }
     }

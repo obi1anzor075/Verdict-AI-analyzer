@@ -21,7 +21,6 @@ export const DEFAULT_STORAGE = {
 export const SETTINGS_KEY = 'verdict:userSettings';
 
 export const DEFAULT_SETTINGS = {
-    autoAnalyze: false,
     maxReviews: 5,
     language: 'ru',
     analysisDepth: 'medium',

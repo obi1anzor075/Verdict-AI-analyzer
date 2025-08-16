@@ -5,36 +5,36 @@
     "src": "../../../../../../@crx/manifest",
     "isEntry": true
   },
-  "_content.init-lE8KZG5m.js": {
-    "file": "assets/content.init-lE8KZG5m.js",
+  "_content.init-C6zUo1iM.js": {
+    "file": "assets/content.init-C6zUo1iM.js",
     "name": "content.init"
   },
-  "_index.js-loader-D7i7wZNl.js": {
-    "file": "assets/index.js-loader-D7i7wZNl.js",
-    "src": "_index.js-loader-D7i7wZNl.js"
+  "_index.js-loader-Bnx9jg9P.js": {
+    "file": "assets/index.js-loader-Bnx9jg9P.js",
+    "src": "_index.js-loader-Bnx9jg9P.js"
   },
   "src/background/background.js": {
-    "file": "assets/background-CzTBnQwE.js",
+    "file": "assets/background-CKA1MKuK.js",
     "name": "background",
     "src": "src/background/background.js",
     "isEntry": true
   },
   "src/content/content.init.js": {
-    "file": "assets/content-PsMlWQZc.js",
+    "file": "assets/content-r7SVVeH5.js",
     "name": "content",
     "src": "src/content/content.init.js",
     "isEntry": true,
     "imports": [
-      "_content.init-lE8KZG5m.js"
+      "_content.init-C6zUo1iM.js"
     ]
   },
   "src/content/index.js": {
-    "file": "assets/index.js-Dg5YC3Sd.js",
+    "file": "assets/index.js-CqfSN8nq.js",
     "name": "index.js",
     "src": "src/content/index.js",
     "isEntry": true,
     "imports": [
-      "_content.init-lE8KZG5m.js"
+      "_content.init-C6zUo1iM.js"
     ]
   }
 }
